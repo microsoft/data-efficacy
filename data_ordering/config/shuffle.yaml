@@ -3,4 +3,4 @@ version: 1.0
 description: Config of shuffle method in data ordering.
 
 score_field: score
-seed: 10
+seed: 42

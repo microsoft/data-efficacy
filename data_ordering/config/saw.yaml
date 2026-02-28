@@ -1,0 +1,13 @@
+name: section
+version: 1.0
+description: Config of section (hybrid sorting/folding) method in data ordering.
+
+
+score_field: score
+ascending: True
+reverse_even_layers: True
+folding_layer: 3
+num_sections: 3
+folding_ratio: 0.1
+window_size: 100000
+seed: 42
