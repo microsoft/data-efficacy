@@ -4,3 +4,5 @@ description: Config of folding method in data ordering.
 
 score_field: score
 folding_layer: 3
+window_size: 100000
+seed: 42

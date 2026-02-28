@@ -55,6 +55,8 @@ For data ordering, we devise **Folding Ordering (FO)** method, which addresses i
 ## 📢 News and Updates
 
 Done
+- [x] 2026/02/28: 💥 The **Data Ordering** module is officially integrated into DELT, supporting various data organization strategies including **Folding**, **Shuffle**, **Sorting**, **Zig-zag**, **Segment**, **Stair**, and **Saw Ordering**.
+- [x] 2026/01/05: 💥Our paper **"Demystifying Data Organization for Enhanced LLM Training"** was submitted to ACL ARR January 2026.
 - [x] 2025/06/28: 💥The [Arxiv paper](https://arxiv.org/abs/2506.21545) released.
 - [x] 2025/08/31: 💥The DELT code released for pre-training on general domain.
 
@@ -137,7 +139,7 @@ bash data_selection/entry.sh $INPUT_DATA_PATH $OUTPUT_DATA_PATH $METHOD $CONFIG_
 <details open>
 <summary>Data Ordering</summary>
 
-Existing ordering method: **Folding Ordering (FO)** (`folding`), Shuffle (`shuffle`), and Sorting (`sorting`).
+Existing ordering method: **Folding Ordering (FO)** (`folding`), Shuffle (`shuffle`), Sorting (`sorting`), Zig-zag Ordering(`zigzag`), Segment Ordering(`segment`), Stair Ordering(`str`), Saw Ordering(`saw`).
 
 ```bash
 bash data_ordering/entry.sh $INPUT_DATA_PATH $OUTPUT_DATA_PATH $METHOD $CONFIG_PATH
