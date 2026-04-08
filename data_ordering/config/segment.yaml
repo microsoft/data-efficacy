@@ -3,7 +3,7 @@ version: 1.0
 description: Config of segment-based ordering method.
 
 
-score_field: score
+score_field: average_test_score
 
 x_pct: 30
 y_pct: 30

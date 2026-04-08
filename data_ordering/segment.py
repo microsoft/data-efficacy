@@ -28,7 +28,6 @@ def window_based_shuffle(data, window_size, seed=42):
         shuffled_final_data.extend(chunk)
 
     return shuffled_final_data
-z
 def order(in_data, args):
     """
     Segment Ordering：按分数重排序数据，将数据分为前、中、后三段，并分别打乱

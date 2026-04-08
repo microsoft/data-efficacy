@@ -10,3 +10,4 @@ python data_ordering/entry.py \
     --output_data_path $OUTPUT_DATA_PATH \
     --method $METHOD \
     --config_path $CONFIG_PATH \
+    

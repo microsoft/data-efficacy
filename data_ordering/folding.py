@@ -48,8 +48,9 @@ def order(in_data, args):
 
     window_size = getattr(args, "window_size", 0)
     seed = getattr(args, "seed", 42)
+    ascending = getattr(args, "ascending", True)
 
-    sorted_data = sorted(in_data, key=lambda x: x[score_field], reverse=False)
+    sorted_data = sorted(in_data, key=lambda x: x[score_field], reverse=not ascending)
 
     out_data = list()
     for l in range(layers):

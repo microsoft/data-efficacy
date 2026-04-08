@@ -66,6 +66,7 @@ def order(in_data, args):
             - zigzag_layer: zigzag折叠层数
             - use_gumble: 是否启用gumble扰动
             - temperature: 温度系数，控制扰动强度。越大越随机
+            - ascending: 是否升序（True为升序，False为降序）
             - seed: 随机种子（可选）
             - window_size:局部打乱窗口大小,如果为 0 或 1，则不进行局部打乱
 
@@ -78,9 +79,12 @@ def order(in_data, args):
     use_gumbel = args.use_gumbel
     seed = args.seed
     window_size = getattr(args, "window_size", 0)
+    ascending = getattr(args, "ascending", True)
 
     scores = np.array([item[score_field] for item in in_data])
     base_sorted_indices = list(np.argsort(scores))
+    if not ascending:
+        base_sorted_indices = base_sorted_indices[::-1]
     sorted_indices = gumbel_indices_sort(base_sorted_indices, tau, use_gumbel, seed)
 
     r = 2

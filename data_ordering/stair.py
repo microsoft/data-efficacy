@@ -1,5 +1,5 @@
 import numpy as np
-def _apply_interleave_fold(data_segment, score_field, layers, reverse_even_layers=False): # <--- MODIFICATION: 增加新参数
+def _apply_interleave_fold(data_segment, score_field, layers, reverse_even_layers=False, ascending = True): # <--- MODIFICATION: 增加新参数
     """
     应用 "Folding" 逻辑
     
@@ -13,7 +13,7 @@ def _apply_interleave_fold(data_segment, score_field, layers, reverse_even_layer
         return []
         
 
-    sorted_data = sorted(data_segment, key=lambda x: x[score_field], reverse=False)
+    sorted_data = sorted(data_segment, key=lambda x: x[score_field], reverse=not ascending)
     
     out_data = list()
     for l in range(layers):
@@ -127,7 +127,8 @@ def order(in_data, args):
                     data_segment,
                     score_field,
                     interleave_layers,
-                    reverse_even_layers
+                    reverse_even_layers,
+                    ascending
                 )
                 out_data.extend(folded_segment)
     else:

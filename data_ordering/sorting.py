@@ -91,7 +91,7 @@ def order(in_data, args):
     base_sorted_indices = list(np.argsort(scores))
     if not ascending:
         base_sorted_indices = base_sorted_indices[::-1]
-    sorted_indices = gumbel_indices_sort(base_sorted_indices, tau, use_gumbel, seed, ascending)
+    sorted_indices = gumbel_indices_sort(base_sorted_indices, tau, use_gumbel, seed, ascending=True)
     sorted_data = [in_data[i] for i in sorted_indices]
 
 

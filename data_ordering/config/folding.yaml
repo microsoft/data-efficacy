@@ -2,7 +2,8 @@ name: folding
 version: 1.0
 description: Config of folding method in data ordering.
 
-score_field: score
-folding_layer: 3
-window_size: 100000
+score_field: average_test_score
+folding_layer: 5
+window_size: 0
 seed: 42
+ascending: false

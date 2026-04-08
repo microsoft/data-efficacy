@@ -1,10 +1,8 @@
 import numpy as np
-
-
-def _apply_interleave_fold(data_segment, score_field, layers, reverse_even_layers=False):  # <--- MODIFICATION: 增加新参数
+def _apply_interleave_fold(data_segment, score_field, layers, reverse_even_layers=False, ascending = True): # <--- MODIFICATION: 增加新参数
     """
     应用 "Folding" 逻辑
-
+    
     Args:
         data_segment (list): 要处理的数据片段
         score_field (str): 分数字段
@@ -13,9 +11,10 @@ def _apply_interleave_fold(data_segment, score_field, layers, reverse_even_layer
     """
     if not data_segment:
         return []
+        
 
-    sorted_data = sorted(data_segment, key=lambda x: x[score_field], reverse=False)
-
+    sorted_data = sorted(data_segment, key=lambda x: x[score_field], reverse=not ascending)
+    
     out_data = list()
     for l in range(layers):
 
@@ -23,7 +22,7 @@ def _apply_interleave_fold(data_segment, score_field, layers, reverse_even_layer
         if reverse_even_layers and (l % 2 != 0):
             sub_data.reverse()
         out_data.extend(sub_data)
-
+        
     return out_data
 
 
@@ -47,25 +46,25 @@ def window_based_shuffle(data, window_size, seed=42):
     shuffled_final_data = []
 
     for i in range(0, n, window_size):
+
         chunk = data[i: i + window_size]
         rng.shuffle(chunk)
         shuffled_final_data.extend(chunk)
 
     return shuffled_final_data
 
-
 def order(in_data, args):
     """
-    Saw Ordering：先全局排序，然后在 K-1 个分割点应用局部折叠并反转奇数层，最后局部窗口打乱（可选）
+    Stair Ordering：先全局排序，然后在 K-1 个分割点应用局部折叠，最后局部窗口打乱（可选）
 
     Args:
         in_data (list): 输入数据列表，每个元素为带有分数的字典。
         args: 包含配置参数的对象。
             - score_field: 分数字段名
             - ascending: 是否升序
-            - reverse_even_layers:是否翻转偶数层（参数默认True）
+            - reverse_even_layers:是否翻转偶数层（参数默认False）
             - folding_layer: 局部折叠参数 (来自 'folding')
-            - num_section: 数据被分成的总折数（参数默认为3）
+            - num_section: 数据被分成的总折数（参数默认为2）
             - folding_ratio: 在分割点处，向上和向下各取多少比例的数据进行折叠 (例如 0.10 表示各 10%)
             - window_size:局部打乱窗口大小,如果为 0 或 1，则不进行局部打乱
             - seed:随机种子
@@ -73,6 +72,7 @@ def order(in_data, args):
     Returns:
         list: 重排序后的数据列表
     """
+
 
     score_field = args.score_field
     ascending = args.ascending
@@ -127,7 +127,8 @@ def order(in_data, args):
                     data_segment,
                     score_field,
                     interleave_layers,
-                    reverse_even_layers
+                    reverse_even_layers,
+                    ascending
                 )
                 out_data.extend(folded_segment)
     else:

@@ -7,7 +7,7 @@ import sorting
 import folding
 import zigzag
 import segment
-import str
+import stair
 import saw
 from utils import load_yaml, load_jsonl, add_args, write_jsonl
 
@@ -16,8 +16,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Data ordering.")
     parser.add_argument("--input_data_path", type=str, help="Path to the input .jsonl file.")
     parser.add_argument("--output_data_path", type=str, help="Path to the output .jsonl file.")
-    parser.add_argument("--method", type=str, choices=["shuffle", "sorting", "folding", "zigzag", "segment", "str", "saw"], default="folding",
-                        help="Ordering method: 'shuffle', 'sorting', and 'folding','zigzag','segment','str','saw'. Defaults to 'folding'.")
+    parser.add_argument("--method", type=str, choices=["shuffle", "sorting", "folding", "zigzag", "segment", "stair", "saw"], default="folding",
+                        help="Ordering method: 'shuffle', 'sorting', and 'folding','zigzag','segment','stair','saw'. Defaults to 'folding'.")
     parser.add_argument("--config_path", type=str, default="./config/folding.yaml", help="Config file for additional parameters (YAML format).")
 
     args = parser.parse_args()
@@ -62,8 +62,8 @@ if __name__ == "__main__":
         if hasattr(args, 'seed'):
             print(f"  Random seed: {args.seed}")
 
-    if args.method == "str":
-        out_data = str.order(in_data, args)
+    if args.method == "stair":
+        out_data = stair.order(in_data, args)
         print(f"   Global Ascending: {args.ascending}")
         print(f"   Num sections: {args.num_sections}")
         print(f"   Folding ratio: {args.folding_ratio}")
