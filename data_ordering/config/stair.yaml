@@ -4,8 +4,7 @@ description: Config of section (hybrid sorting/folding) method in data ordering.
 
 
 score_field: average_test_score
-ascending: False
-reverse_even_layers: False
+ascending: true
 folding_layer: 3
 num_sections: 2
 folding_ratio: 0.225

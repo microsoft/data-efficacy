@@ -1,0 +1,267 @@
+name: Learnability-Quality Score (LQS)
+version: 1.0
+description: Config of LQS method in data scoring.
+temp_root: ./
+
+# # TBD. LQS-based data scorer weights are in preparation and are not currently available.
+# checkpoint_download:
+# # hf download
+#   hf_model_id: TBD
+#   output_model_path: temp/lqs/models
+
+full_data:
+# hf download
+  hf_model_id: Data-Selection/BSL-160M
+  output_model_path: temp/lqs/models
+
+# process data
+  # name
+  data_type: source
+  data_name: cc-1b 
+  model_type: mistral
+  model_name: 160m
+  # hp
+  model_path: temp/lqs/models
+  save: temp/lqs/data
+  field: text
+  max_length: 1025
+  # truncation: true
+  # max_length: null
+  truncation: false
+  log_interval: 10000
+  data_process_workers: 32
+  chunk_num_per_shard: 1000000
+  max_shard_num: 10000000
+  seed: 1234
+
+target_data:
+# hf download
+  hf_data_id: GAIR/lima
+  hf_data_name: plain_text
+  split_name: train
+  sample_size: -1
+  output_data_path: temp/lqs/data
+
+# process data
+  # name
+  data_type: target
+  data_name: lima
+  model_type: mistral
+  model_name: 160m
+  # hp 
+  model_path: temp/lqs/models
+  save: temp/lqs/data
+  data_path: temp/lqs/data
+  field: conversations
+  data_process_workers: 32
+  max_length: 1025
+  truncation: false
+  seed: 10
+
+proxy_data:
+# sample proxy data
+  # name 
+  data_type: proxy
+  data_path: temp/lqs/data
+  data_name: cc
+  # hp
+  save: temp/lqs/data
+  proxy_num: 163840
+  max_state: 10
+  min_state: 0
+  seed: 10
+
+annotation_data:
+# proxy data annotation
+  type: annotation_data
+  # model
+  model_type: mistral
+  model_path: temp/lqs/models
+  ckpt_name: 160M
+  attn_impl: eager
+  fp32: true
+  xops_attn: false
+  model_parallel: false
+  dropout_path_rate: null
+  # data 
+  proxy_num: 163840
+  data_name: cc-lima
+  data_dir: temp/lqs/data
+  dev_data_dir: temp/lqs/data
+  proxy_data_dir: temp/lqs/data
+  bin_data: true
+  no_shuffle: true
+  dataset_type: lm
+  max_state: 10
+  train_num: null
+  dev_num: null
+  # hp
+  total_iters: 100
+  epochs: null
+  lr: 0.008
+  batch_size: 8
+  grad_batch_size: 2
+  proxy_batch_size: 8
+  eval_batch_size: 4
+  gradient_accumulation_steps: 2
+  clip_grad: -1
+  max_length: 1024
+  truncation: true
+  num_workers: 2
+  weight_decay: 0.0
+  optimizer_name: sgd
+  scheduler_name: constant
+  warmup_iters: 0
+  min_offset: 0
+  min_prompt_length: 128
+  max_prompt_length: 512
+  from_scratch: false
+  gradient_checkpointing: false
+  # runtime
+  save: temp/lqs/data
+  log_interval: 1
+  eval_interval: 10
+  wandb_group: annotation_data
+  compute_ct_interval: 10
+  # seed
+  seed: 10
+  seed_data: 10
+  # wandb
+  wandb_mode: disabled
+  wandb_name: null
+
+# hf download
+  hf_model_id: KoboldAI/fairseq-dense-125M
+  output_model_path: temp/lqs/models
+
+# prepare data for data scoring
+  proxy_score_path: temp/lqs/data
+  data_scorer_tokenizer_path: temp/lqs/models
+  data_scorer_model_type: fairseq
+  proxy_save: temp/lqs/data
+  data_process_workers: 32
+  chunk_num_per_shard: 1000000
+  proxy_dev_num: 16384
+
+scorer_data_training:
+# data scorer train
+  # model
+  type: scoring_data
+  ckpt_name: fairseq-125m
+  model_path: temp/lqs/models
+  model_type: fairseq
+  data_scorer_encoding: mean
+  data_scorer_bias: true
+  data_scorer_head_type: linear
+  model_parallel: false
+  dropout_path_rate: null
+  xops_attn: false
+  torch_compile: null
+  # data
+  data_dir: temp/lqs/data
+  num_workers: 0
+  train_num: 163840
+  dev_num: 16384
+  # hp
+  lr: 0.0001
+  lr_min: 0.0000001
+  batch_size: 16
+  eval_batch_size: 64
+  gradient_accumulation_steps: 2
+  warmup_iters: 10
+  scheduler_name: cosine
+  weight_decay: 1e-2
+  clip_grad: 1.0
+  epochs: 5
+  total_iters: null
+  max_length: 1024
+  truncation: true
+  min_prompt_length: 128
+  max_prompt_length: 512
+  from_scratch: false
+  gradient_checkpointing: false
+  attn_impl: null
+  fp32: false
+  optimizer_name: AdamW
+  adam_eps: 1e-8
+  adam_beta: 0.9
+  adam_beta2: 0.999
+  # runtime
+  do_train: true
+  do_valid: true
+  do_infer: false
+  do_eval: false
+  save_interval: -1
+  eval_interval: -1
+  log_interval: 1
+  mid_log_num: -1
+  save: temp/lqs/models
+  seed: 10
+  order_seed: 10
+  precompute_data_order: false
+  resume_training: false
+  no_shuffle: false
+  start_from_global_step: null
+  save_all: false
+  # deepspeed
+  deepspeed: true
+  deepspeed_config: data_scoring/config/deepspeed_lqs.json
+  # wandb
+  wandb_mode: disabled
+  wandb_name: null
+  wandb_group: null
+  wandb_id: null
+
+scorer_data_infer:
+# convert bin to jsonl
+  bin_data_path: temp/lqs/data
+  pt_score_path: temp/lqs/data
+  jsonl_tokenizer_path: temp/lqs/models
+  jsonl_model_type: mistral
+
+# data scorer infer
+  type: data_scorer
+  # model
+  model_path: temp/lqs/models
+  # ckpt_name: cc-160M-lima
+  model_type: fairseq-125m
+  max_length: 1024
+  truncation: false
+  attn_impl: eager
+  xops_attn: true
+  torch_compile: reduce-overhead
+  gradient_accumulation_steps: 1
+  model_parallel: false
+  dropout_path_rate: null
+  # data
+  data_dir: temp/lqs/data
+  num_workers: 0
+  infer_num: 160000000
+  # hp
+  eval_batch_size: 128
+  batch_size: 32
+  clip_grad: 1 
+  min_prompt_length: 128
+  max_prompt_length: 512
+  from_scratch: false
+  gradient_checkpointing: false
+  fp32: false
+  # runtime
+  do_train: false
+  do_valid: false
+  do_infer: true
+  do_eval: false
+  log_interval: 10
+  save_interval: 2500
+  save: temp/lqs/data
+  # seed
+  seed: 10
+  order_seed: 10
+  # deepspeed
+  deepspeed: true
+  deepspeed_config: data_scoring/config/deepspeed_lqs.json
+  # wandb
+  wandb_mode: disabled
+  wandb_name: null
+  wandb_group: null
+  wandb_id: null

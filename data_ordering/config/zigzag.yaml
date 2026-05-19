@@ -8,4 +8,4 @@ use_gumbel: false
 temperature: 0
 seed: 42
 window_size: 0
-ascending: false
+ascending: true

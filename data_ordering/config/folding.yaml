@@ -6,4 +6,4 @@ score_field: average_test_score
 folding_layer: 5
 window_size: 0
 seed: 42
-ascending: false
+ascending: true

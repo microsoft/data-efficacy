@@ -1,117 +1,59 @@
 import random
-import numpy as np
 import warnings
 
-def window_based_shuffle(data, window_size, seed=42):
-    """
-    Jittering Ordering:对列表进行局部窗口内的随机打乱,整体有序，局部无序
+try:
+    from .common import sort_data
+except ImportError:
+    from common import sort_data
 
-    Args:
-        data:输入数据列表
-        window_size:局部打乱窗口大小,如果为 0 或 1，则不进行局部打乱
-        seed:随机种子
 
-    Returns:
-        list: 重排序后的数据列表
-    """
-    if window_size <= 1:
-        return data
+def _take_boundary(sorted_data, n_items, high):
+    if n_items <= 0:
+        return [], list(sorted_data)
+    if high:
+        return list(sorted_data[-n_items:]), list(sorted_data[:-n_items])
+    return list(sorted_data[:n_items]), list(sorted_data[n_items:])
 
-    n = len(data)
-    rng = np.random.RandomState(seed)
-    shuffled_final_data = []
 
-    for i in range(0, n, window_size):
-
-        chunk = data[i: i + window_size]
-        rng.shuffle(chunk)
-        shuffled_final_data.extend(chunk)
-
-    return shuffled_final_data
 def order(in_data, args):
-    """
-    Segment Ordering：按分数重排序数据，将数据分为前、中、后三段，并分别打乱
+    """Segment Ordering (SEG).
 
-    Args:
-        in_data (list): 输入数据列表，每个元素为带有分数的字典
-        args: 包含配置参数的对象
-            - score_field: 分数字段名
-            - x_pct: 前段百分比 (0-100)
-            - y_pct: 后段百分比 (0-100)
-            - front_is_high: 前段是否取高分样本
-            - back_is_high: 后段是否取高分样本
-            - seed: 随机种子（可选）
-
-    Returns:
-        list: 重排序后的数据列表
+    The front and back segments draw from low-score or high-score boundaries,
+    while the remaining samples form the middle segment. Each segment is
+    shuffled independently.
     """
     score_field = args.score_field
     total_samples = len(in_data)
+    seed = getattr(args, "seed", 42)
+    rng = random.Random(seed)
 
-    if hasattr(args, 'seed'):
-        random.seed(args.seed)
-        np.random.seed(args.seed)
-
-    sorted_data = sorted(
-        enumerate(in_data),
-        key=lambda x: (x[1][score_field], x[0]),
-        reverse=False
-    )
-    sorted_data = [item[1] for item in sorted_data]
-
-    n_front = int(np.floor(args.x_pct / 100 * total_samples))
-    n_back = int(np.floor(args.y_pct / 100 * total_samples))
-
+    sorted_data = sort_data(in_data, score_field, ascending=True)
+    n_front = int(total_samples * args.x_pct // 100)
+    n_back = int(total_samples * args.y_pct // 100)
     total_selected = n_front + n_back
+
     if total_selected > total_samples:
-
         ratio = total_samples / total_selected
-        n_front = int(np.floor(n_front * ratio))
-        n_back = int(np.floor(n_back * ratio))
+        n_front = int(n_front * ratio)
+        n_back = total_samples - n_front
         warnings.warn(
-            f"前段({args.x_pct}%)和后段({args.y_pct}%)的总和超过100%! "
-            f"已按比例缩减为前段{n_front}个、后段{n_back}个样本。"
+            f"x_pct + y_pct exceeds 100; resized to {n_front} front and {n_back} back samples.",
+            RuntimeWarning,
         )
-        total_selected = n_front + n_back
 
-    front = []
-    back = []
-    middle = []
+    front_is_high = bool(args.front_is_high)
+    back_is_high = bool(args.back_is_high)
 
-    if args.front_is_high == args.back_is_high:
-
-        if args.front_is_high:
-            selected = sorted_data[-total_selected:] if total_selected > 0 else []
-            middle = sorted_data[:-total_selected] if total_selected > 0 else sorted_data
-        else:
-            selected = sorted_data[:total_selected] if total_selected > 0 else []
-            middle = sorted_data[total_selected:] if total_selected > 0 else sorted_data
-
-        if selected:
-            random.shuffle(selected)
-
-            front = selected[:n_front]
-            back = selected[n_front:total_selected]
+    if front_is_high == back_is_high:
+        selected, middle = _take_boundary(sorted_data, n_front + n_back, high=front_is_high)
+        rng.shuffle(selected)
+        front = selected[:n_front]
+        back = selected[n_front:]
     else:
+        front, remaining = _take_boundary(sorted_data, n_front, high=front_is_high)
+        back, middle = _take_boundary(remaining, n_back, high=back_is_high)
 
-        if args.front_is_high:
-            front = sorted_data[-n_front:] if n_front > 0 else []
-            remaining = sorted_data[:-n_front] if n_front > 0 else sorted_data
-        else:
-            front = sorted_data[:n_front] if n_front > 0 else []
-            remaining = sorted_data[n_front:] if n_front > 0 else sorted_data
-
-        if args.back_is_high:
-            back = remaining[-n_back:] if n_back > 0 else []
-            middle = remaining[:-n_back] if n_back > 0 else remaining
-        else:
-            back = remaining[:n_back] if n_back > 0 else []
-            middle = remaining[n_back:] if n_back > 0 else remaining
-
-
-    random.shuffle(front)
-    random.shuffle(middle)
-    random.shuffle(back)
-    out_data = front + middle + back
-
-    return out_data
+    rng.shuffle(front)
+    rng.shuffle(middle)
+    rng.shuffle(back)
+    return front + middle + back

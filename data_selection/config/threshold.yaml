@@ -1,0 +1,6 @@
+name: threshold
+version: 1.0
+description: Config of threshold method in data selection.
+
+score_field: score
+threshold: 0.6

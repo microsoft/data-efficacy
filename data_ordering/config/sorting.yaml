@@ -3,7 +3,7 @@ version: 1.1
 description: Config of sorting method with local window shuffling.
 
 score_field: average_test_score
-ascending: false
+ascending: true
 use_gumbel: false
 temperature: 0
 window_size: 0

@@ -1,0 +1,6 @@
+name: top-r
+version: 1.0
+description: Config of top-r method in data selection.
+
+score_field: score
+r: 1.0

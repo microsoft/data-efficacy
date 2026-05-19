@@ -5,8 +5,8 @@ description: Config of segment-based ordering method.
 
 score_field: average_test_score
 
-x_pct: 30
-y_pct: 30
+x_pct: 10
+y_pct: 10
 front_is_high: false
 back_is_high: true
 

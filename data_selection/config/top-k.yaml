@@ -1,0 +1,6 @@
+name: top-k
+version: 1.0
+description: Config of top-k method in data selection.
+
+score_field: score
+k: 10000

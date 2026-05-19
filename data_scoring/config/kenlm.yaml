@@ -1,0 +1,5 @@
+model_path: temp/kenlm/models
+language_type: en
+text_fields: 
+ - text 
+score_field: score
