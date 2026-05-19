@@ -11,7 +11,7 @@
   <a href="https://huggingface.co/microsoft/DELT"><b>[HF Model]</b></a>
 </p>
 
-This page documents the ACL 2026 follow-up work **"Demystifying Data Organization for Enhanced LLM Training"**. The code is implemented as an extension of DELT's **Data Ordering** stage, so it can reuse the same scored or selected JSONL data produced by the original DELT pipeline.
+This page introduces the code and usage for our ACL 2026 work, **"Demystifying Data Organization for Enhanced LLM Training"**. The code is implemented as an extension of DELT's **Data Ordering** stage, so it can reuse the same scored or selected JSONL data produced by the original DELT pipeline.
 
 <!-- ![Overview of data organization guidances and scaling results](assets/overview.png) -->
 
@@ -43,6 +43,15 @@ Supported ordering methods:
 Set `window_size > 1` in any method config to apply Jittering Ordering (JIT), which shuffles samples inside local windows while preserving the global trend.
 
 ![Score-index distributions under different data organization strategies](assets/order_patterns.png)
+
+## Datasets
+
+For the general-domain pre-training experiments, we use sampled subsets from public scored corpora on Hugging Face:
+
+- [FineWeb-Edu](https://huggingface.co/datasets/HuggingFaceFW/fineweb-edu), which provides educational-quality web data from FineWeb.
+- [QuRatedPajama-260B](https://huggingface.co/datasets/princeton-nlp/QuRatedPajama-260B), which provides SlimPajama-based data annotated with quality ratings.
+
+After sampling and preprocessing, save the data as JSONL with a sample-level score field, then pass it to the ordering scripts. The `score_field` used by the ordering methods can be configured in each YAML file under [config](./config).
 
 ## Data Format
 
