@@ -1,5 +1,16 @@
 # Demystifying Data Organization for Enhanced LLM Training
 
+<p align="center">
+ <img src="https://img.shields.io/badge/Task-Data_Organization-orange" alt="Task" />
+ <img src="https://img.shields.io/badge/Venue-ACL_2026-green" alt="Venue" />
+ <img src="https://img.shields.io/badge/License-MIT-blue" alt="License" />
+</p>
+
+<p align="center">
+  <a href="https://openreview.net/forum?id=i409rQuIfB"><b>[Paper]</b></a> •
+  <a href="https://huggingface.co/microsoft/DELT"><b>[HF Model]</b></a>
+</p>
+
 This page documents the ACL 2026 follow-up work **"Demystifying Data Organization for Enhanced LLM Training"**. The code is implemented as an extension of DELT's **Data Ordering** stage, so it can reuse the same scored or selected JSONL data produced by the original DELT pipeline.
 
 <!-- ![Overview of data organization guidances and scaling results](assets/overview.png) -->

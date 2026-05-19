@@ -12,7 +12,9 @@
   <a href="https://huggingface.co/microsoft/DELT"><b>[HF Model]</b></a>
 </p>
 
-This repository is built directly on **DELT**. DELT studies data efficacy for language model training through three connected stages: **Data Scoring**, **Data Selection**, and **Data Ordering**. Our ACL 2026 follow-up, **"Demystifying Data Organization for Enhanced LLM Training"**, extends the data ordering stage while keeping the original DELT pipeline intact. For more information about this follow-up work, please refer to [data_ordering/README.md](./data_ordering/README.md).
+This repository contains the official implementation of **DELT**, which studies data efficacy for language model training through three connected stages: **Data Scoring**, **Data Selection**, and **Data Ordering**.
+
+Our ACL 2026 follow-up, **"Demystifying Data Organization for Enhanced LLM Training"**, extends DELT's data ordering stage while keeping the original pipeline intact. For details about this follow-up work, please refer to [data_ordering/README.md](./data_ordering/README.md).
 
 <figure>
   <img src="./figures/fig1_result.jpg" alt="Figure 1" style="width: 95%;">
