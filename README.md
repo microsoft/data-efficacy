@@ -2,7 +2,7 @@
 
 <p align="center">
  <img src="https://img.shields.io/badge/Task-Data_Efficacy-orange" alt="Task" />
- <img src="https://img.shields.io/badge/Paper-Published-green" alt="Paper" />
+ <img src="https://img.shields.io/badge/Paper-arXiv-green" alt="Paper" />
  <img src="https://img.shields.io/badge/License-MIT-blue" alt="License" />
 </p>
 
