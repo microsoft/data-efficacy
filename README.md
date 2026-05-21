@@ -1,73 +1,56 @@
-# Data Efficacy for Language Model Training
+# Data Efficacy
 
 <p align="center">
  <img src="https://img.shields.io/badge/Task-Data_Efficacy-orange" alt="Task" />
- <img src="https://img.shields.io/badge/Paper-arXiv-green" alt="Paper" />
+ <img src="https://img.shields.io/badge/Scope-Scalable_Codebase-green" alt="Scope" />
  <img src="https://img.shields.io/badge/License-MIT-blue" alt="License" />
 </p>
 
 <p align="center">
-  <a href="https://arxiv.org/abs/2506.21545"><b>[DELT Paper]</b></a> •
-  <a href="https://github.com/microsoft/DELT"><b>[Original Code]</b></a> •
-  <a href="https://huggingface.co/microsoft/DELT"><b>[HF Model]</b></a>
+  <a href="./docs/README.md"><b>[Documentation]</b></a> •
+  <a href="./docs/delt.md"><b>[DELT]</b></a> •
+  <a href="./docs/data_organization_acl2026.md"><b>[ACL 2026 Data Organization]</b></a>
 </p>
 
-This repository contains the official implementation of "Data Efficacy for Language Model Training" (**DELT**), which studies data efficacy for language model training through three connected stages: **Data Scoring**, **Data Selection**, and **Data Ordering**.
+This repository is a scalable codebase for **Data Efficacy**, a line of work that studies how to improve language model training by making better use of data.
 
-Our ACL 2026 follow-up, **"Demystifying Data Organization for Enhanced LLM Training"**, extends DELT's data ordering stage while keeping the original pipeline intact. For details about this follow-up work, please refer to [data_ordering/README.md](./data_ordering/README.md).
+The codebase was originally released for **Data Efficacy for Language Model Training (DELT)** and now also hosts follow-up work on data organization. The root README describes the shared motivation, repository layout, and common running pipeline. Paper-specific notes live under [docs](./docs/README.md), while reusable implementations stay in the corresponding modules.
 
-<figure>
-  <img src="./figures/fig1_result.jpg" alt="Figure 1" style="width: 95%;">
-  <figcaption style="color: gray;">
-    <div><small><em>Figure 1. DELT improves data efficacy and efficiency by reusing data scores for selection and ordering.</em></small></div>
-  </figcaption>
-</figure>
+![Data efficacy pipeline](./figures/data_efficacy_paradigm.png)
 
-## Introduction
+## Motivation
 
-Data is fundamental to the training of language models (LMs). Recent research has focused heavily on data efficiency, which aims to maximize performance by selecting a minimal or optimal subset of training data. DELT complements this direction with **data efficacy**, which improves model performance by optimizing how training data is organized.
+Large-scale language model training depends heavily on data curation. Many data efficiency methods compute expensive sample-level scores for quality, difficulty, learnability, or educational value, but these scores are often used only once for filtering.
 
-<figure>
-  <img src="./figures/data_efficacy_paradigm.png" alt="DELT paradigm" style="width: 95%;">
-  <figcaption style="color: gray;">
-    <div align="center"><small><em>Figure 2. DELT paradigm.</em></small></div>
-  </figcaption>
-</figure>
+Data Efficacy aims to reuse such scores more fully across the training pipeline. In this repository, that shared pipeline is organized around four reusable stages:
 
-For data scoring, DELT introduces **Learnability-Quality Scoring (LQS)**, which considers both the learnability and quality of each data sample from the gradient consistency perspective.
+- **Data Scoring** estimates sample-level utility.
+- **Data Selection** chooses useful subsets under a data or compute budget.
+- **Data Ordering** organizes selected samples into an effective training sequence.
+- **Model Training and Evaluation** measure whether the curated data improves downstream performance.
 
-<figure>
-  <img src="./figures/fig2_score.jpg" alt="LQS" style="width: 95%;">
-  <figcaption style="color: gray;">
-    <div align="center"><small><em>Figure 3. Learnability-Quality Scoring (LQS).</em></small></div>
-  </figcaption>
-</figure>
+## Papers
 
-For data ordering, DELT introduces **Folding Ordering (FO)** to mitigate forgetting and data distribution bias. The ACL 2026 follow-up further systematizes data organization and adds several ordering strategies guided by Boundary Sharpening, Cyclic Scheduling, Curriculum Continuity, and Local Diversity.
+| Work | Status | Main Modules | Details |
+| --- | --- | --- | --- |
+| **Data Efficacy for Language Model Training (DELT)** | arXiv 2025 | `data_scoring`, `data_selection`, `data_ordering` | [docs/delt.md](./docs/delt.md) |
+| **Demystifying Data Organization for Enhanced LLM Training** | ACL 2026 | `data_ordering` | [docs/data_organization_acl2026.md](./docs/data_organization_acl2026.md) |
 
-<figure>
-  <img src="./figures/fig3_order.jpg" alt="Folding Ordering" style="width: 95%;">
-  <figcaption style="color: gray; text-align: center;">
-    <div align="center"><small><em>Figure 4. Folding Ordering (FO).</em></small></div>
-  </figcaption>
-</figure>
+## Repository Structure
 
-## News and Updates
+```text
+.
+├── data_scoring/      # Compute sample-level scores, including LQS and KenLM-based scoring.
+├── data_selection/    # Select subsets with top-r, top-k, or threshold methods.
+├── data_ordering/     # Organize scored data with sorting, folding, zig-zag, segment, STR, and SAW.
+├── model_train/       # Train language models on curated data.
+├── model_eval/        # Evaluate trained models.
+├── docs/              # Paper-specific documentation and assets.
+├── figures/           # Figures used by repository documentation.
+└── tests/             # Lightweight tests for reusable components.
+```
 
-Done
-
-- [x] 2026: The follow-up paper **"Demystifying Data Organization for Enhanced LLM Training"** was accepted by ACL 2026.
-- [x] 2026: The **Data Ordering** module now supports Folding, Shuffle, Sorting, Zig-zag, Segment, Stair, and Saw ordering.
-- [x] 2025/06/28: The [DELT arXiv paper](https://arxiv.org/abs/2506.21545) was released.
-- [x] 2025/08/31: The DELT code was released for pre-training on the general domain.
-
-TBD
-
-- [ ] Release the model of the LQS data scorer on the general domain.
-- [ ] Release post-training scripts and configs for the math and code domains.
-- [ ] Add reproduction configs for the ACL 2026 data organization experiments.
-
-## Environment Installation
+## Installation
 
 ```bash
 conda create -n data_efficacy python=3.10 -y
@@ -75,7 +58,7 @@ conda activate data_efficacy
 pip install -r requirements.txt
 ```
 
-For the lightweight data ordering scripts only, `numpy` and `pyyaml` are sufficient.
+For lightweight data ordering only, `numpy` and `pyyaml` are sufficient.
 
 ## Preparation
 
@@ -94,36 +77,51 @@ export WANDB_API_KEY="<your_wandb_apikey>"
 ```bash
 python utils.py --content dataset --id $HF_DATASET_ID --save-dir $OUTPUT_DATA_PATH
 
-# e.g. python utils.py --content=dataset --id=togethercomputer/RedPajama-Data-1T --save-dir=data/source-cc-1b.jsonl --data-name=common_crawl --split-name=train --sample-size=500000
-# If you want to try the dataset used in the DELT paper:
-# python utils.py --content=dataset --id=togethercomputer/RedPajama-Data-1T-Sample --save-dir=data/source-cc-1b.jsonl
-# You can also replace it with your own JSONL dataset.
+# Example:
+python utils.py \
+  --content dataset \
+  --id togethercomputer/RedPajama-Data-1T \
+  --save-dir data/source-cc-1b.jsonl \
+  --data-name common_crawl \
+  --split-name train \
+  --sample-size 500000
 ```
+
+You can also use your own JSONL dataset.
 </details>
 
 <details open>
 <summary>Model</summary>
 
 ```bash
-python utils.py --content=model --id $HF_MODEL_ID --save-dir $OUTPUT_MODEL_PATH
+python utils.py --content model --id $HF_MODEL_ID --save-dir $OUTPUT_MODEL_PATH
 
-# e.g. python utils.py --content=model --id=Data-Selection/BSL-160M --save-dir=models/mistral-160m
-# You can also replace it with your own Hugging Face model.
+# Example:
+python utils.py \
+  --content model \
+  --id Data-Selection/BSL-160M \
+  --save-dir models/mistral-160m
 ```
 </details>
 
-## Quick Start
+## Pipeline Usage
+
+The repository exposes each stage through a separate entry script. You can run the full scoring-selection-ordering-training pipeline or reuse only the stages needed by a specific paper.
 
 <details open>
 <summary>Data Scoring</summary>
 
-Existing scoring methods include **Learnability-Quality Score** (`lqs`) and Perplexity (`kenlm`). For more details about LQS, please refer to [data_scoring/lqs/README.md](./data_scoring/lqs/README.md).
+Existing scoring methods include **Learnability-Quality Score** (`lqs`) and Perplexity (`kenlm`). For LQS details, see [data_scoring/lqs/README.md](./data_scoring/lqs/README.md).
 
 ```bash
 bash data_scoring/entry.sh $INPUT_DATA_PATH $OUTPUT_DATA_PATH $METHOD $CONFIG_PATH
 
-# e.g. bash data_scoring/entry.sh data/source-cc-1b.jsonl data/source-cc-1b_scored-lqs.jsonl lqs data_scoring/config/lqs.yaml
-# Please note that LQS involves downloading Hugging Face gated models/datasets, and you need to configure it.
+# Example:
+bash data_scoring/entry.sh \
+  data/source-cc-1b.jsonl \
+  data/source-cc-1b_scored-lqs.jsonl \
+  lqs \
+  data_scoring/config/lqs.yaml
 ```
 </details>
 
@@ -135,34 +133,30 @@ Existing selection methods include **Top-R** (`top-r`), Threshold (`threshold`),
 ```bash
 bash data_selection/entry.sh $INPUT_DATA_PATH $OUTPUT_DATA_PATH $METHOD $CONFIG_PATH
 
-# e.g. bash data_selection/entry.sh data/source-cc-1b_scored-lqs.jsonl data/source-cc-1b_scored-lqs_selected-r1.0.jsonl top-r data_selection/config/top-r.yaml
+# Example:
+bash data_selection/entry.sh \
+  data/source-cc-1b_scored-lqs.jsonl \
+  data/source-cc-1b_scored-lqs_selected-r1.0.jsonl \
+  top-r \
+  data_selection/config/top-r.yaml
 ```
 </details>
 
 <details open>
 <summary>Data Ordering</summary>
 
-Existing ordering methods include **Folding Ordering (FO)** (`folding`), Shuffle (`shuffle`), Sorting / Curriculum Learning (`sorting`), Zig-zag Ordering (`zigzag`), Segment Ordering (`segment`), Stair Ordering / STR (`stair`), and Saw Ordering / SAW (`saw`). Setting `window_size > 1` applies Jittering Ordering (JIT) as local window shuffling.
+Existing ordering methods include Sorting (`sorting`), Folding Ordering (`folding`), Zig-zag Ordering (`zigzag`), Segment Ordering (`segment`), Stair Ordering / STR (`stair`), Saw Ordering / SAW (`saw`), and Shuffle (`shuffle`). For the ACL 2026 data organization work, see [docs/data_organization_acl2026.md](./docs/data_organization_acl2026.md).
 
 ```bash
 bash data_ordering/entry.sh $INPUT_DATA_PATH $OUTPUT_DATA_PATH $METHOD $CONFIG_PATH
 
-# DELT FO example:
-bash data_ordering/entry.sh \
-  data/source-cc-1b_scored-lqs_selected-r1.0.jsonl \
-  data/source-cc-1b_scored-lqs_selected-r1.0_ordered-folding-l3.jsonl \
-  folding \
-  data_ordering/config/folding.yaml
-
-# ACL 2026 SAW example:
+# Example:
 bash data_ordering/entry.sh \
   data/source-cc-1b_scored-lqs_selected-r1.0.jsonl \
   data/source-cc-1b_scored-lqs_selected-r1.0_ordered-saw.jsonl \
   saw \
   data_ordering/config/saw.yaml
 ```
-
-See [data_ordering/README.md](./data_ordering/README.md) for details of the ordering module.
 </details>
 
 <details open>
@@ -171,7 +165,13 @@ See [data_ordering/README.md](./data_ordering/README.md) for details of the orde
 ```bash
 bash model_train/entry.sh $INPUT_DATA_PATH $INPUT_MODEL_PATH $OUTPUT_MODEL_PATH $METHOD $CONFIG_PATH
 
-# e.g. bash model_train/entry.sh data/source-cc-1b_scored-lqs_selected-r1.0_ordered-folding-l3.jsonl models/mistral-160m models/pretrain_mistral-160m_source-cc-1b_scored-lqs_selected-r1.0_ordered-folding-l3_src pretrain model_train/config/train.yaml
+# Example:
+bash model_train/entry.sh \
+  data/source-cc-1b_scored-lqs_selected-r1.0_ordered-saw.jsonl \
+  models/mistral-160m \
+  models/pretrain_mistral-160m_source-cc-1b_ordered-saw \
+  pretrain \
+  model_train/config/train.yaml
 ```
 </details>
 
@@ -181,7 +181,12 @@ bash model_train/entry.sh $INPUT_DATA_PATH $INPUT_MODEL_PATH $OUTPUT_MODEL_PATH 
 ```bash
 bash model_eval/entry.sh $INPUT_MODEL_PATH $OUTPUT_RESULT_PATH $METHOD $CONFIG_PATH
 
-# e.g. bash model_eval/entry.sh models/pretrain_mistral-160m_source-cc-1b_scored-lqs_selected-r1.0_ordered-folding-l3_src models/pretrain_mistral-160m_source-cc-1b_scored-lqs_selected-r1.0_ordered-folding-l3_src/result.yaml lm_evaluation_harness model_eval/config/general.yaml
+# Example:
+bash model_eval/entry.sh \
+  models/pretrain_mistral-160m_source-cc-1b_ordered-saw \
+  models/pretrain_mistral-160m_source-cc-1b_ordered-saw/result.yaml \
+  lm_evaluation_harness \
+  model_eval/config/general.yaml
 ```
 </details>
 
@@ -205,4 +210,4 @@ bash model_eval/entry.sh $INPUT_MODEL_PATH $OUTPUT_RESULT_PATH $METHOD $CONFIG_P
 
 ## License
 
-This repository is licensed under the [MIT](https://github.com/microsoft/DELT/blob/main/LICENSE) License.
+This repository is licensed under the [MIT](./LICENSE) License.
