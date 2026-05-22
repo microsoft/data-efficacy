@@ -46,8 +46,7 @@ This work introduces a data efficacy pipeline for language model training that r
 ├── model_train/       # Train models on curated data.
 ├── model_eval/        # Evaluate trained models.
 ├── docs/              # Paper-specific documentation and assets.
-├── figures/           # Figures used by repository documentation.
-└── tests/             # Lightweight tests for reusable components.
+└── figures/           # Figures used by repository documentation.
 ```
 
 ## Installation
