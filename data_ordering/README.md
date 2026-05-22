@@ -24,5 +24,5 @@ bash data_ordering/entry.sh \
 
 For paper-specific details, see:
 
-- [DELT](../docs/delt.md)
-- [Demystifying Data Organization for Enhanced LLM Training](../docs/data_organization_acl2026.md)
+- [Data Efficacy for Language Model Training](../docs/data_efficacy_for_language_model_training.md)
+- [Demystifying Data Organization for Enhanced LLM Training](../docs/demystifying_data_organization_for_enhanced_llm_training.md)

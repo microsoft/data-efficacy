@@ -6,8 +6,8 @@ This folder keeps paper-specific documentation for the Data Efficacy codebase. T
 
 | Work | Status | Page |
 | --- | --- | --- |
-| Data Efficacy for Language Model Training (DELT) | arXiv 2025 | [delt.md](./delt.md) |
-| Demystifying Data Organization for Enhanced LLM Training | ACL 2026 | [data_organization_acl2026.md](./data_organization_acl2026.md) |
+| Data Efficacy for Language Model Training (DELT) | arXiv 2025 | [Data Efficacy for Language Model Training](./data_efficacy_for_language_model_training.md) |
+| Demystifying Data Organization for Enhanced LLM Training | ACL 2026 | [Demystifying Data Organization for Enhanced LLM Training](./demystifying_data_organization_for_enhanced_llm_training.md) |
 
 ## Adding New Work
 

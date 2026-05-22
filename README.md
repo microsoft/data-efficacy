@@ -28,11 +28,11 @@ Data Efficacy aims to reuse such scores more fully across the training pipeline.
 
 ## Works
 
-### Demystifying Data Organization for Enhanced LLM Training ([Paper](https://openreview.net/forum?id=i409rQuIfB) | [README](./docs/data_organization_acl2026.md))
+### Demystifying Data Organization for Enhanced LLM Training ([Paper](https://openreview.net/forum?id=i409rQuIfB) | [README](./docs/demystifying_data_organization_for_enhanced_llm_training.md))
 
 This work studies how to organize scored training data (data ordering) and introduces practical guidances for boundary sharpening, cyclic scheduling, curriculum continuity, and local diversity.
 
-### Data Efficacy for Language Model Training ([Paper](https://arxiv.org/abs/2506.21545) | [README](./docs/delt.md))
+### Data Efficacy for Language Model Training ([Paper](https://arxiv.org/abs/2506.21545) | [README](./docs/data_efficacy_for_language_model_training.md))
 
 This work introduces a data efficacy pipeline for language model training that reuses sample-level scores across data scoring, data selection, and data ordering.
 
@@ -145,7 +145,7 @@ bash data_selection/entry.sh \
 <details open>
 <summary>Data Ordering</summary>
 
-Existing ordering methods include Sorting (`sorting`), Folding Ordering (`folding`), Zig-zag Ordering (`zigzag`), Segment Ordering (`segment`), Stair Ordering / STR (`stair`), Saw Ordering / SAW (`saw`), and Shuffle (`shuffle`). For the ACL 2026 data organization work, see [docs/data_organization_acl2026.md](./docs/data_organization_acl2026.md).
+Existing ordering methods include Sorting (`sorting`), Folding Ordering (`folding`), Zig-zag Ordering (`zigzag`), Segment Ordering (`segment`), Stair Ordering / STR (`stair`), Saw Ordering / SAW (`saw`), and Shuffle (`shuffle`). For the ACL 2026 data organization work, see [Demystifying Data Organization for Enhanced LLM Training](./docs/demystifying_data_organization_for_enhanced_llm_training.md).
 
 ```bash
 bash data_ordering/entry.sh $INPUT_DATA_PATH $OUTPUT_DATA_PATH $METHOD $CONFIG_PATH
