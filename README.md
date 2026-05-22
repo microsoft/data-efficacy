@@ -2,25 +2,14 @@
 
 <p align="center">
  <img src="https://img.shields.io/badge/Task-Data_Efficacy-orange" alt="Task" />
- <img src="https://img.shields.io/badge/Scope-Scalable_Codebase-green" alt="Scope" />
  <img src="https://img.shields.io/badge/License-MIT-blue" alt="License" />
 </p>
 
-<p align="center">
-  <a href="./docs/README.md"><b>[Documentation]</b></a> •
-  <a href="./docs/delt.md"><b>[DELT]</b></a> •
-  <a href="./docs/data_organization_acl2026.md"><b>[ACL 2026 Data Organization]</b></a>
-</p>
+Large-scale model training benefits from data at scale, but the value of a dataset also depends on how effectively it is used. **Data Efficacy** studies how to turn available data into stronger training signal by scoring samples, selecting useful subsets, and organizing them into effective training sequences.
 
-This repository is a scalable codebase for **Data Efficacy**, a line of work that studies how to improve language model training by making better use of data.
+## Introduction
 
-The codebase was originally released for **Data Efficacy for Language Model Training (DELT)** and now also hosts follow-up work on data organization. The root README describes the shared motivation, repository layout, and common running pipeline. Paper-specific notes live under [docs](./docs/README.md), while reusable implementations stay in the corresponding modules.
-
-![Data efficacy pipeline](./figures/data_efficacy_paradigm.png)
-
-## Motivation
-
-Large-scale language model training depends heavily on data curation. Many data efficiency methods compute expensive sample-level scores for quality, difficulty, learnability, or educational value, but these scores are often used only once for filtering.
+Large-scale model training depends heavily on data curation. Many data efficiency methods compute expensive sample-level scores for quality, difficulty, learnability, or relevance, but these scores are often used only once for filtering.
 
 Data Efficacy aims to reuse such scores more fully across the training pipeline. In this repository, that shared pipeline is organized around four reusable stages:
 
@@ -29,21 +18,32 @@ Data Efficacy aims to reuse such scores more fully across the training pipeline.
 - **Data Ordering** organizes selected samples into an effective training sequence.
 - **Model Training and Evaluation** measure whether the curated data improves downstream performance.
 
-## Papers
+![Data efficacy pipeline](./figures/data_efficacy_paradigm.png)
 
-| Work | Status | Main Modules | Details |
-| --- | --- | --- | --- |
-| **Data Efficacy for Language Model Training (DELT)** | arXiv 2025 | `data_scoring`, `data_selection`, `data_ordering` | [docs/delt.md](./docs/delt.md) |
-| **Demystifying Data Organization for Enhanced LLM Training** | ACL 2026 | `data_ordering` | [docs/data_organization_acl2026.md](./docs/data_organization_acl2026.md) |
+## News
 
-## Repository Structure
+- **2026/05**: Added the ACL 2026 follow-up work **Demystifying Data Organization for Enhanced LLM Training**, with new data organization methods under `data_ordering`.
+- **2025/08**: Released the codebase for general-domain pre-training.
+- **2025/06**: Released **Data Efficacy for Language Model Training (DELT)** on arXiv.
+
+## Works
+
+### Demystifying Data Organization for Enhanced LLM Training ([Paper](https://openreview.net/forum?id=i409rQuIfB) | [README](./docs/data_organization_acl2026.md))
+
+This work studies how to organize scored training data (data ordering) and introduces practical guidances for boundary sharpening, cyclic scheduling, curriculum continuity, and local diversity.
+
+### Data Efficacy for Language Model Training ([Paper](https://arxiv.org/abs/2506.21545) | [README](./docs/delt.md))
+
+This work introduces a data efficacy pipeline for language model training that reuses sample-level scores across data scoring, data selection, and data ordering.
+
+## Repo Structure
 
 ```text
 .
 ├── data_scoring/      # Compute sample-level scores, including LQS and KenLM-based scoring.
 ├── data_selection/    # Select subsets with top-r, top-k, or threshold methods.
 ├── data_ordering/     # Organize scored data with sorting, folding, zig-zag, segment, STR, and SAW.
-├── model_train/       # Train language models on curated data.
+├── model_train/       # Train models on curated data.
 ├── model_eval/        # Evaluate trained models.
 ├── docs/              # Paper-specific documentation and assets.
 ├── figures/           # Figures used by repository documentation.

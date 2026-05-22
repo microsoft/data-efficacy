@@ -1,4 +1,4 @@
-# DELT: Data Efficacy for Language Model Training
+# Data Efficacy for Language Model Training
 
 <p align="center">
  <img src="https://img.shields.io/badge/Task-Data_Efficacy-orange" alt="Task" />
