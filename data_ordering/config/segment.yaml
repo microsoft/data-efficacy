@@ -1,0 +1,13 @@
+name: segment
+version: 1.0
+description: Config of segment-based ordering method.
+
+
+score_field: average_test_score
+
+x_pct: 10
+y_pct: 10
+front_is_high: false
+back_is_high: true
+
+seed: 42

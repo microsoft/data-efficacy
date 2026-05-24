@@ -1,0 +1,11 @@
+name: zigzag
+version: 2.0
+description: Config of zigzag method in data ordering.
+
+score_field: average_test_score
+zigzag_layer: 5
+use_gumbel: false
+temperature: 0
+seed: 42
+window_size: 0
+ascending: true
