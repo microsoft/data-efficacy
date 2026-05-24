@@ -1,6 +1,9 @@
 import random
 
+
 def order(in_data, args):
-    random.seed(args.seed)
-    out_data = random.sample(in_data, len(in_data))
+    seed = getattr(args, "seed", 42)
+    rng = random.Random(seed)
+    out_data = list(in_data)
+    rng.shuffle(out_data)
     return out_data

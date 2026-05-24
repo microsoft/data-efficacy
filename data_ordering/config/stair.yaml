@@ -1,0 +1,12 @@
+name: stair ordering
+version: 1.0
+description: Config of section (hybrid sorting/folding) method in data ordering.
+
+
+score_field: average_test_score
+ascending: true
+folding_layer: 3
+num_sections: 2
+folding_ratio: 0.225
+window_size: 0
+seed: 42

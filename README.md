@@ -1,69 +1,55 @@
-# Data Efficacy for Language Model Training
+# Data Efficacy
 
 <p align="center">
- <img src="https://img.shields.io/badge/Task-Data_Efficacy-orange" alt="Task" /> 
- <img src="https://img.shields.io/badge/Paper-Published-green" alt="Paper" /> 
+ <img src="https://img.shields.io/badge/Task-Data_Efficacy-orange" alt="Task" />
  <img src="https://img.shields.io/badge/License-MIT-blue" alt="License" />
 </p>
 
-<p align="center">
-  <a href="https://arxiv.org/abs/2506.21545"><b>[📜 Paper]</b></a> •
-  <a href="https://github.com/microsoft/DELT"><b>[🐱 GitHub Code]</b></a> •
-  <a href="https://huggingface.co/microsoft/DELT"><b>[🤗 HF Model]</b></a>
-</p>
+Large-scale model training benefits from data at scale, but the value of a dataset also depends on how effectively it is used. **Data Efficacy** studies how to turn available data into stronger training signal by scoring samples, selecting useful subsets, and organizing them into effective training sequences.
 
-<figure>
-  <img src="./figures/fig1_result.jpg" alt="Figure 1" style="width: 95%;">
-  <figcaption style="color: gray;">
-    <div><small><em>Figure 1. Average result across 8 benchmarks for different methods. High performance at the same selection ratio indicates high efficacy, while achieving similar performance with a smaller selection ratio demonstrates high efficiency. Our method excels in both efficacy and efficiency.</em></small></div>
-  </figcaption>
-</figure>
+## Introduction
 
-## 🌟 Introduction
-Data is fundamental to the training of language models (LM). Recent research has been dedicated to data efficiency, which aims to maximize performance by selecting a minimal or optimal subset of training data. Techniques such as data filtering, sampling, and selection play a crucial role in this area. To complement it, we define Data Efficacy, which focuses on maximizing performance by optimizing the organization of training data and remains relatively underexplored. This work introduces a general paradigm, DELT, for considering data efficacy in LM training, which highlights the significance of training data organization. DELT comprises three components: Data Scoring, Data Selection, and Data Ordering.
+Large-scale model training depends heavily on data curation. Many data efficiency methods compute expensive sample-level scores for quality, difficulty, learnability, or relevance, but these scores are often used only once for filtering.
 
-<figure>
-  <img src="./figures/data_efficacy_paradigm.png" alt="Figure 2" style="width: 95%;">
-  <figcaption style="color: gray;">
-    <div align="center"><small><em>Figure 2. DELT paradigm.</em></small></div>
-  </figcaption>
-</figure>
+Data Efficacy aims to reuse such scores more fully across the training pipeline. In this repository, that shared pipeline is organized around four reusable stages:
 
-<br>
+- **Data Scoring** estimates sample-level utility.
+- **Data Selection** chooses useful subsets under a data or compute budget.
+- **Data Ordering** organizes selected samples into an effective training sequence.
+- **Model Training and Evaluation** measure whether the curated data improves downstream performance.
 
-For data scoring, we design **Learnability-Quality Scoring (LQS)** method, which considers both the learnability and quality of each data sample from the gradient consistency perspective.
+![Data efficacy pipeline](./figures/data_efficacy_paradigm.png)
 
-<figure>
-  <img src="./figures/fig2_score.jpg" alt="Figure 3" style="width: 95%;">
-  <figcaption style="color: gray;">
-    <div align="center"><small><em>Figure 3. Learnability-Quality Scoring (LQS).</em></small></div>
-  </figcaption>
-</figure>
+## News
 
-<br>
+- **2026/05**: Added the ACL 2026 follow-up work **Demystifying Data Organization for Enhanced LLM Training**, with new data organization methods under `data_ordering`.
+- **2025/08**: Released the codebase for general-domain pre-training.
+- **2025/06**: Released **Data Efficacy for Language Model Training (DELT)** on arXiv.
 
-For data ordering, we devise **Folding Ordering (FO)** method, which addresses issues such as model forgetting and data distribution bias.
+## Works
 
-<figure>
-  <img src="./figures/fig3_order.jpg" alt="Figure 4" style="width: 95%;">
-  <figcaption style="color: gray; text-align: center;">
-    <div align="center"><small><em>Figure 4. Folding Ordering (FO).</em></small></div>
-  </figcaption>
-</figure>
+### Demystifying Data Organization for Enhanced LLM Training ([Paper](https://openreview.net/forum?id=i409rQuIfB) | [README](./docs/demystifying_data_organization_for_enhanced_llm_training.md))
 
+This work studies how to organize scored training data (data ordering) and introduces practical guidances for boundary sharpening, cyclic scheduling, curriculum continuity, and local diversity.
 
-## 📢 News and Updates
+### Data Efficacy for Language Model Training ([Paper](https://arxiv.org/abs/2506.21545) | [README](./docs/data_efficacy_for_language_model_training.md))
 
-Done
-- [x] 2025/06/28: 💥The [Arxiv paper](https://arxiv.org/abs/2506.21545) released.
-- [x] 2025/08/31: 💥The DELT code released for pre-training on general domain.
+This work introduces a data efficacy pipeline for language model training that reuses sample-level scores across data scoring, data selection, and data ordering.
 
-TBD
-- [ ] Release the model of LQS data scorer on general domain (CommonCrawl).
-- [ ] Release the DELT code for post-training on specific domain.
+## Repo Structure
 
+```text
+.
+├── data_scoring/      # Compute sample-level scores, including LQS and KenLM-based scoring.
+├── data_selection/    # Select subsets with top-r, top-k, or threshold methods.
+├── data_ordering/     # Organize scored data with sorting, folding, zig-zag, segment, STR, and SAW.
+├── model_train/       # Train models on curated data.
+├── model_eval/        # Evaluate trained models.
+├── docs/              # Paper-specific documentation and assets.
+└── figures/           # Figures used by repository documentation.
+```
 
-## ⚙️ Environment Installation
+## Installation
 
 ```bash
 conda create -n data_efficacy python=3.10 -y
@@ -71,7 +57,9 @@ conda activate data_efficacy
 pip install -r requirements.txt
 ```
 
-## 💾 Preparation.
+For lightweight data ordering only, `numpy` and `pyyaml` are sufficient.
+
+## Preparation
 
 <details open>
 <summary>Environment Variables</summary>
@@ -88,64 +76,87 @@ export WANDB_API_KEY="<your_wandb_apikey>"
 ```bash
 python utils.py --content dataset --id $HF_DATASET_ID --save-dir $OUTPUT_DATA_PATH
 
-# e.g. python utils.py --content=dataset --id=togethercomputer/RedPajama-Data-1T --save-dir=data/source-cc-1b.jsonl --data-name=common_crawl --split-name=train --sample-size=500000
-# If you want to try the dataset used in the paper, please use the below commandline:
-# python utils.py --content=dataset --id=togethercomputer/RedPajama-Data-1T-Sample --save-dir=data/source-cc-1b.jsonl 
-# You could also replace it with your own dataset under jsonl format. 
+# Example:
+python utils.py \
+  --content dataset \
+  --id togethercomputer/RedPajama-Data-1T \
+  --save-dir data/source-cc-1b.jsonl \
+  --data-name common_crawl \
+  --split-name train \
+  --sample-size 500000
 ```
+
+You can also use your own JSONL dataset.
 </details>
 
 <details open>
 <summary>Model</summary>
 
 ```bash
-python utils.py --content=model --id $HF_MODEL_ID --save-dir $OUTPUT_MODEL_PATH
+python utils.py --content model --id $HF_MODEL_ID --save-dir $OUTPUT_MODEL_PATH
 
-# e.g. python utils.py --content=model --id=Data-Selection/BSL-160M --save-dir=models/mistral-160m
-# You could also replace it with your own model under hf format.
+# Example:
+python utils.py \
+  --content model \
+  --id Data-Selection/BSL-160M \
+  --save-dir models/mistral-160m
 ```
 </details>
 
-## ⏩ Quick Start.
+## Pipeline Usage
+
+The repository exposes each stage through a separate entry script. You can run the full scoring-selection-ordering-training pipeline or reuse only the stages needed by a specific paper.
 
 <details open>
 <summary>Data Scoring</summary>
 
-Existing scoring method: **Learnability-Quality Score** (`lqs`), and Perplexity (`kenlm`).
-For more details about LQS, please refer to [this guideline](./data_scoring/lqs/README.md).
+Existing scoring methods include **Learnability-Quality Score** (`lqs`) and Perplexity (`kenlm`). For LQS details, see [data_scoring/lqs/README.md](./data_scoring/lqs/README.md).
 
 ```bash
 bash data_scoring/entry.sh $INPUT_DATA_PATH $OUTPUT_DATA_PATH $METHOD $CONFIG_PATH
 
-# e.g. bash data_scoring/entry.sh data/source-cc-1b.jsonl data/source-cc-1b_scored-lqs.jsonl lqs data_scoring/config/lqs.yaml
-# Please note that LQS involves downloading Hugging Face gated models/datasets, and you need to configure it.
+# Example:
+bash data_scoring/entry.sh \
+  data/source-cc-1b.jsonl \
+  data/source-cc-1b_scored-lqs.jsonl \
+  lqs \
+  data_scoring/config/lqs.yaml
 ```
 </details>
 
 <details open>
 <summary>Data Selection</summary>
 
-Existing selection method: **Top-R** (`top-r`), Threshold (`threshold`), and Top-K (`top-k`).
+Existing selection methods include **Top-R** (`top-r`), Threshold (`threshold`), and Top-K (`top-k`).
 
 ```bash
 bash data_selection/entry.sh $INPUT_DATA_PATH $OUTPUT_DATA_PATH $METHOD $CONFIG_PATH
 
-# e.g. bash data_selection/entry.sh data/source-cc-1b_scored-lqs.jsonl data/source-cc-1b_scored-lqs_selected-r1.0.jsonl top-r data_selection/config/top-r.yaml
+# Example:
+bash data_selection/entry.sh \
+  data/source-cc-1b_scored-lqs.jsonl \
+  data/source-cc-1b_scored-lqs_selected-r1.0.jsonl \
+  top-r \
+  data_selection/config/top-r.yaml
 ```
 </details>
 
 <details open>
 <summary>Data Ordering</summary>
 
-Existing ordering method: **Folding Ordering (FO)** (`folding`), Shuffle (`shuffle`), and Sorting (`sorting`).
+Existing ordering methods include Sorting (`sorting`), Folding Ordering (`folding`), Zig-zag Ordering (`zigzag`), Segment Ordering (`segment`), Stair Ordering / STR (`stair`), Saw Ordering / SAW (`saw`), and Shuffle (`shuffle`). For the ACL 2026 data organization work, see [Demystifying Data Organization for Enhanced LLM Training](./docs/demystifying_data_organization_for_enhanced_llm_training.md).
 
 ```bash
 bash data_ordering/entry.sh $INPUT_DATA_PATH $OUTPUT_DATA_PATH $METHOD $CONFIG_PATH
 
-# e.g. bash data_ordering/entry.sh data/source-cc-1b_scored-lqs_selected-r1.0.jsonl data/source-cc-1b_scored-lqs_selected-r1.0_ordered-folding-l3.jsonl folding data_ordering/config/folding.yaml
+# Example:
+bash data_ordering/entry.sh \
+  data/source-cc-1b_scored-lqs_selected-r1.0.jsonl \
+  data/source-cc-1b_scored-lqs_selected-r1.0_ordered-saw.jsonl \
+  saw \
+  data_ordering/config/saw.yaml
 ```
 </details>
-
 
 <details open>
 <summary>Model Training</summary>
@@ -153,10 +164,15 @@ bash data_ordering/entry.sh $INPUT_DATA_PATH $OUTPUT_DATA_PATH $METHOD $CONFIG_P
 ```bash
 bash model_train/entry.sh $INPUT_DATA_PATH $INPUT_MODEL_PATH $OUTPUT_MODEL_PATH $METHOD $CONFIG_PATH
 
-# e.g. bash model_train/entry.sh data/source-cc-1b_scored-lqs_selected-r1.0_ordered-folding-l3.jsonl models/mistral-160m models/pretrain_mistral-160m_source-cc-1b_scored-lqs_selected-r1.0_ordered-folding-l3_src pretrain model_train/config/train.yaml
+# Example:
+bash model_train/entry.sh \
+  data/source-cc-1b_scored-lqs_selected-r1.0_ordered-saw.jsonl \
+  models/mistral-160m \
+  models/pretrain_mistral-160m_source-cc-1b_ordered-saw \
+  pretrain \
+  model_train/config/train.yaml
 ```
 </details>
-
 
 <details open>
 <summary>Model Evaluation</summary>
@@ -164,21 +180,33 @@ bash model_train/entry.sh $INPUT_DATA_PATH $INPUT_MODEL_PATH $OUTPUT_MODEL_PATH 
 ```bash
 bash model_eval/entry.sh $INPUT_MODEL_PATH $OUTPUT_RESULT_PATH $METHOD $CONFIG_PATH
 
-# e.g. bash model_eval/entry.sh models/pretrain_mistral-160m_source-cc-1b_scored-lqs_selected-r1.0_ordered-folding-l3_src models/pretrain_mistral-160m_source-cc-1b_scored-lqs_selected-r1.0_ordered-folding-l3_src/result.yaml lm_evaluation_harness model_eval/config/general.yaml
+# Example:
+bash model_eval/entry.sh \
+  models/pretrain_mistral-160m_source-cc-1b_ordered-saw \
+  models/pretrain_mistral-160m_source-cc-1b_ordered-saw/result.yaml \
+  lm_evaluation_harness \
+  model_eval/config/general.yaml
 ```
 </details>
 
+## Citation
 
-## 🔗 Citation
-```
+```bibtex
 @article{dai2025data,
   title={Data Efficacy for Language Model Training},
   author={Yalun Dai and Yangyu Huang and Xin Zhang and Wenshan Wu and Chong Li and Wenhui Lu and Shijie Cao and Li Dong and Scarlett Li},
   journal={arXiv preprint arXiv:2506.21545},
   year={2025}
 }
+
+@inproceedings{dai2026demystifying,
+  title={Demystifying Data Organization for Enhanced LLM Training},
+  author={Yalun Dai and Yangyu Huang and Tongshen Yang and Yonghan Wang and Xin Zhang and Wenshan Wu and Qihao Zhao and Hao Li and Yuanyuan Gao and Kim-Hui Yap and Scarlett Li},
+  booktitle={Proceedings of the Annual Meeting of the Association for Computational Linguistics},
+  year={2026}
+}
 ```
 
-## 👀 License
-This repository is licensed under the [MIT](https://github.com/microsoft/DELT/blob/main/LICENSE) License.
+## License
 
+This repository is licensed under the [MIT](./LICENSE) License.
