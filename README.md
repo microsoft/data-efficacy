@@ -28,7 +28,7 @@ Data Efficacy aims to reuse such scores more fully across the training pipeline.
 
 ## Works
 
-### Demystifying Data Organization for Enhanced LLM Training ([Paper](https://openreview.net/forum?id=i409rQuIfB) | [README](./docs/demystifying_data_organization_for_enhanced_llm_training.md))
+### Demystifying Data Organization for Enhanced LLM Training ([Paper](https://arxiv.org/abs/2605.30334) | [README](./docs/demystifying_data_organization_for_enhanced_llm_training.md))
 
 This work studies how to organize scored training data (data ordering) and introduces practical guidances for boundary sharpening, cyclic scheduling, curriculum continuity, and local diversity.
 
